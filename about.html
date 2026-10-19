@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <main class="container" style="max-width:720px">
+    <section>
+      <h1>About us</h1>
+      <p>We create clear, practical learning resources: step-by-step roadmaps for popular careers,
+        beginner-friendly guides to using AI, ready-to-use prompt packs, and concise book summaries
+        you can read in 15 minutes.</p>
+      <p>Everything here is free to download — no account or sign-up needed.</p>
+
+      <h2>Contact</h2>
+      <p>Questions? Email <a id="email"></a>.</p>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+  <script>
+    renderLayout("about");
+    const e = document.getElementById("email");
+    e.textContent = STORE.contactEmail;
+    e.href = "mailto:" + STORE.contactEmail;
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <main class="container">
+    <section class="hero">
+      <h1 id="hero-title">Learn anything faster.</h1>
+      <p id="hero-tagline"></p>
+      <div class="actions">
+        <a class="btn" href="shop.html">Browse all products</a>
+        <a class="btn btn-outline" href="shop.html?cat=guide">Start with AI guides</a>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>Browse by category</h2></div>
+      <div class="cat-grid" id="categories"></div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Most popular</h2>
+        <a href="shop.html">View all →</a>
+      </div>
+      <div class="grid" id="featured"></div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+  <script>
+    renderLayout("home");
+    document.getElementById("hero-tagline").textContent = STORE.tagline;
+
+    document.getElementById("categories").innerHTML = Object.entries(CATEGORIES).map(([key, c]) => {
+      const count = PRODUCTS.filter(p => p.category === key).length;
+      return `<a class="cat-tile" href="shop.html?cat=${key}">
+        <div class="icon">${c.icon}</div>
+        <h3>${c.label}</h3>
+        <p>${count} product${count === 1 ? "" : "s"}</p>
+      </a>`;
+    }).join("");
+
+    document.getElementById("featured").innerHTML =
+      PRODUCTS.filter(p => p.featured).map(cardHTML).join("");
+  </script>
+</body>
+</html>

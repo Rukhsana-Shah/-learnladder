@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <main class="container" id="main"></main>
+
+  <section class="container">
+    <div class="section-head"><h2>You may also like</h2></div>
+    <div class="grid" id="related"></div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+  <script>
+    const id = new URLSearchParams(location.search).get("id");
+    const p = PRODUCTS.find(x => x.id === id);
+    const main = document.getElementById("main");
+
+    if (!p) {
+      renderLayout("shop");
+      main.innerHTML = `<section><h1>Product not found</h1><a class="btn" href="shop.html">Back to shop</a></section>`;
+    } else {
+      document.title = p.title;
+      renderLayout("shop");
+
+      const isFree = p.free || p.price === 0;
+      const connected = p.buyUrl && p.buyUrl !== "#";
+      const buyLabel = isFree ? "Download free" : "Buy now";
+
+      main.innerHTML = `
+        <div class="detail">
+          ${coverHTML(p, false)}
+          <div>
+            <a class="card-cat" href="shop.html?cat=${p.category}" style="text-decoration:none">
+              ${CATEGORIES[p.category].label}
+            </a>
+            <h1>${p.title}</h1>
+            <p>${p.description}</p>
+            ${formatPrice(p)}
+            <a class="btn" href="${p.buyUrl}" ${connected ? 'target="_blank" rel="noopener"' : ""}>${buyLabel}</a>
+            ${connected ? "" : '<div class="notice">Download file not added yet — set <code>buyUrl</code> for this product in products.js.</div>'}
+            <h3 style="margin-top:28px">What's included</h3>
+            <ul>${p.includes.map(i => `<li>${i}</li>`).join("")}</ul>
+            <div class="meta">Format: ${p.format} · Instant download</div>
+          </div>
+        </div>`;
+
+      const related = PRODUCTS.filter(x => x.id !== p.id && x.category === p.category);
+      const fill = PRODUCTS.filter(x => x.id !== p.id && x.category !== p.category);
+      document.getElementById("related").innerHTML =
+        [...related, ...fill].slice(0, 3).map(cardHTML).join("");
+    }
+  </script>
+</body>
+</html>

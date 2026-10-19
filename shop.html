@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <main class="container">
+    <section>
+      <div class="section-head"><h2>All products</h2></div>
+      <input class="search" id="search" type="search" placeholder="Search products…">
+      <div class="filters" id="filters"></div>
+      <div class="grid" id="products"></div>
+      <p id="empty" hidden>No products match your search.</p>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+  <script>
+    renderLayout("shop");
+
+    let activeCat = new URLSearchParams(location.search).get("cat") || "all";
+    const searchBox = document.getElementById("search");
+
+    function renderFilters() {
+      const cats = [["all", "All"], ...Object.entries(CATEGORIES).map(([k, c]) => [k, `${c.icon} ${c.label}`])];
+      document.getElementById("filters").innerHTML = cats.map(([k, label]) =>
+        `<button class="chip ${k === activeCat ? "active" : ""}" data-cat="${k}">${label}</button>`
+      ).join("");
+    }
+
+    function renderProducts() {
+      const q = searchBox.value.trim().toLowerCase();
+      const list = PRODUCTS.filter(p =>
+        (activeCat === "all" || p.category === activeCat) &&
+        (!q || (p.title + " " + p.summary).toLowerCase().includes(q))
+      );
+      document.getElementById("products").innerHTML = list.map(cardHTML).join("");
+      document.getElementById("empty").hidden = list.length > 0;
+    }
+
+    document.getElementById("filters").addEventListener("click", e => {
+      const btn = e.target.closest(".chip");
+      if (!btn) return;
+      activeCat = btn.dataset.cat;
+      renderFilters();
+      renderProducts();
+    });
+    searchBox.addEventListener("input", renderProducts);
+
+    renderFilters();
+    renderProducts();
+  </script>
+</body>
+</html>
